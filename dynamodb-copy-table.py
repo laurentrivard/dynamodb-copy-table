@@ -8,13 +8,18 @@ from time import sleep
 import sys
 import os
 
-if len(sys.argv) != 3:
+if len(sys.argv) < 3:
     print 'Usage: %s <source_table_name>' \
         ' <destination_table_name>' % sys.argv[0]
     sys.exit(1)
+elif len(sys.argv) == 4:
+    if sys.argv[3] not in ['true', 'True', 'false', 'False']:
+        print 'create_dst_table param must be a string representation of a bool'
+        sys.exit(1)
 
 src_table = sys.argv[1]
 dst_table = sys.argv[2]
+create_dst_table = False if sys.argv[3] in ['False', 'false'] else True if len(sys.argv) == 4 else True
 region = os.getenv('AWS_DEFAULT_REGION', 'us-west-2')
 
 # host = 'dynamodb.%s.amazonaws.com' % region
@@ -54,8 +59,9 @@ try:
                      )
 
     table_struct = new_logs.describe()
-    print 'Table %s already exists' % dst_table
-    sys.exit(0)
+    if create_dst_table:
+        print 'Table %s already exists' % dst_table
+        sys.exit(0)
 except JSONResponseError:
     schema = [HashKey(hash_key)]
     if range_key != '':

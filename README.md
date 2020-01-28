@@ -16,6 +16,11 @@ A simple usage example:
 $ python dynamodb-copy-table.py src_table dst_table
 ```
 
+This script creates the destination table by default. If the table already exists, pass in the third parameter create_dst_table. Acceptable values are 'False', 'false', 'True', 'true'
+```shell
+$ python dynamodb-copy-table.py src_table dst_table False
+```
+
 You can use the environment variables `AWS_DEFAULT_REGION` and `DISABLE_DATACOPY` to select the region (the default region is `us-west-2`) and disable the copying of data from source table to destination table.
 
 ```shell
